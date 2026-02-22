@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chao</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      max-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      font-family: "DM Sans", system-ui, sans-serif;
+      font-size: clamp(1rem, 2.5vw, 1.125rem);
+      color: #1a1a1a;
+      background: #f8f6f3;
+    }
+
+    .name {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin: 0 0 0.5rem 0;
+    }
+
+    .aka {
+      font-size: 0.85em;
+      font-weight: 400;
+      color: #5c5c5c;
+      margin: 0 0 2rem 0;
+    }
+
+    .links {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .links a {
+      color: #5c5c5c;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .links a:hover {
+      color: #1a1a1a;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1 class="name">Chaofeng Zhou</h1>
+    <p class="aka">Chao</p>
+    <nav class="links" aria-label="Links">
+      <a href="mailto:chaoslabme@gmail.com">Email</a>
+      <a href="https://github.com/chaofz" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://linkedin.com/in/chaofz" target="_blank" rel="noopener">LinkedIn</a>
+    </nav>
+  </main>
+</body>
+
+</html>
