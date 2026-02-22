@@ -1,0 +1,128 @@
+/* Shared Blog Styles */
+
+.blog-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.blog-list article {
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(230, 237, 243, 0.06);
+  position: relative;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.blog-list article:hover {
+  background: rgba(230, 237, 243, 0.04);
+}
+
+.blog-list article a::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.blog-list article:first-child {
+  padding-top: 0.75rem;
+}
+
+.blog-list h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 0.15rem 0;
+  letter-spacing: -0.01em;
+}
+
+.blog-list h3 a {
+  color: #e6edf3;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.blog-list h3 a:hover {
+  color: #7ee787;
+}
+
+.blog-list .meta {
+  font-size: 0.8125rem;
+  color: #6e7681;
+  margin-top: 0.25rem;
+  margin-bottom: 0.2rem;
+}
+
+.blog-list .excerpt {
+  font-size: 0.9375rem;
+  color: #8b949e;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Post View Styles */
+.post-view {
+  padding-top: 2rem;
+  max-width: 42rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.post-header {
+  margin-bottom: 2.5rem;
+}
+
+.post-header h1 {
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin: 0 0 0.75rem 0;
+  color: #e6edf3;
+}
+
+.post-header .meta {
+  font-size: 0.9375rem;
+  color: #8b949e;
+}
+
+.post-content {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: #d1d9e0;
+}
+
+.post-content p {
+  margin-bottom: 1.5rem;
+}
+
+.post-content h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 2rem 0 1rem 0;
+  color: #e6edf3;
+  letter-spacing: -0.02em;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #8b949e;
+  text-decoration: none;
+  font-size: 0.875rem;
+  margin-bottom: 2rem;
+  padding: 0.4rem 0.75rem 0.4rem 0.7rem;
+  margin-left: -0.75rem;
+  border-radius: 6px;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.back-link:hover {
+  color: #7ee787;
+  background: rgba(126, 231, 135, 0.08);
+}

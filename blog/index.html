@@ -14,42 +14,57 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/blog.css" />
 </head>
 
 <body>
   <nav class="tab-nav" aria-label="Main navigation">
-    <a href="/" id="tab-main" aria-current="page">Main</a>
-    <a href="/blog" id="tab-blog">Blog</a>
+    <a href="/" id="tab-main">Main</a>
+    <a href="/blog" id="tab-blog" aria-current="page">Blog</a>
     <a href="/about" id="tab-about">About</a>
   </nav>
 
   <div class="panels">
-    <!-- Main view -->
-    <section id="view-main" class="view is-active" aria-labelledby="main-heading">
-      <div class="main-inner">
-        <h1 id="main-heading" class="name">Chaofeng Zhou</h1>
-        <p class="tagline">Chaos, decoded</p>
-        <p class="intro">
-          I build things and write about tech and personal growth.
-        </p>
-        <div class="recent-section">
-          <h2>Recent articles</h2>
-          <ul class="recent-list">
+    <!-- Blog view -->
+    <section id="view-blog" class="view is-active" aria-labelledby="blog-heading">
+      <div class="blog-inner">
+        <ul class="blog-list">
             <li>
-              <a href="/blog/building-in-the-open">Building in the open</a>
-              <time datetime="2025-02-15">Feb 15, 2025</time>
+              <article>
+                <h3><a href="/blog/building-in-the-open">Building in the open</a></h3>
+                <p class="meta">Feb 15, 2025</p>
+                <p class="excerpt">Why I share work in progress and what I’ve learned from writing in public.</p>
+              </article>
             </li>
             <li>
-              <a href="/blog">Notes on focus</a>
-              <time datetime="2025-02-01">Feb 1, 2025</time>
+              <article>
+                <h3><a href="/blog">Notes on focus</a></h3>
+                <p class="meta">Feb 1, 2025</p>
+                <p class="excerpt">Practical ideas for staying focused without burning out.</p>
+              </article>
             </li>
             <li>
-              <a href="/blog">Starting chaoslab</a>
-              <time datetime="2025-01-20">Jan 20, 2025</time>
+              <article>
+                <h3><a href="/blog">Starting chaoslab</a></h3>
+                <p class="meta">Jan 20, 2025</p>
+                <p class="excerpt">What this site is for and what I hope to build here.</p>
+              </article>
+            </li>
+            <li>
+              <article>
+                <h3><a href="/blog">Placeholder: Systems thinking</a></h3>
+                <p class="meta">Jan 10, 2025</p>
+                <p class="excerpt">Thinking in systems and feedback loops for product and growth.</p>
+              </article>
+            </li>
+            <li>
+              <article>
+                <h3><a href="/blog">Placeholder: Learning in public</a></h3>
+                <p class="meta">Jan 1, 2025</p>
+                <p class="excerpt">How sharing what you learn accelerates growth and builds connection.</p>
+              </article>
             </li>
           </ul>
-          <a href="/blog" class="see-more">See more →</a>
-        </div>
       </div>
     </section>
   </div>
