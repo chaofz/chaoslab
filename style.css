@@ -37,7 +37,7 @@ body {
   padding-left: max(1.5rem, env(safe-area-inset-left));
   padding-right: max(1.5rem, env(safe-area-inset-right));
   padding-top: max(1rem, env(safe-area-inset-top));
-  background: rgba(15, 20, 25, 0.85);
+  background: rgba(15, 20, 25, 0.95);
 }
 
 .tab-nav a {
@@ -183,7 +183,7 @@ body {
 
 .recent-section h2 {
   font-size: 0.8125rem;
-  font-weight: 600;
+  font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: #8b949e;
@@ -228,6 +228,7 @@ body {
 
 .recent-list a {
   font-size: 1rem;
+  font-weight: 300;
   color: #e6edf3;
   text-decoration: none;
   transition: color 0.2s ease;
@@ -270,9 +271,15 @@ body {
 
 #view-blog .blog-inner {
   max-width: 42rem;
-  margin: 0 auto;
+  margin: 0.5rem auto;
   width: 100%;
   padding: 1.5rem 0;
+}
+
+@media (min-width: 600px) {
+  #view-blog .blog-inner {
+    margin: 5rem auto;
+  }
 }
 
 /* About View Section */
@@ -283,7 +290,7 @@ body {
 #view-about .about-inner {
   max-width: 42rem;
   width: 100%;
-  margin: 0 auto;
+  margin: 5rem auto;
   padding: 1.5rem 0;
 }
 
