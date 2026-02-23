@@ -1,0 +1,259 @@
+const fs = require('fs');
+const path = require('path');
+const { marked } = require('marked');
+
+// Configuration
+const MD_DIR = path.join(__dirname, 'md');
+const BLOG_DIR = path.join(__dirname, 'blog');
+const ABOUT_DIR = path.join(__dirname, 'about');
+const BLOG_LIST_PAGE = path.join(BLOG_DIR, 'index.html');
+const INDEX_PAGE = path.join(__dirname, 'index.html');
+const ABOUT_MD = path.join(ABOUT_DIR, 'about.md');
+const ABOUT_HTML = path.join(ABOUT_DIR, 'index.html');
+
+// Helper to parse frontmatter-like fields from MD
+function parseMd(content) {
+  const lines = content.split('\n');
+  const metadata = {};
+  let bodyStart = 0;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line.startsWith('link:')) {
+      metadata.link = line.replace('link:', '').trim();
+    } else if (line.startsWith('date:')) {
+      metadata.date = line.replace('date:', '').trim();
+    } else if (line.startsWith('title:')) {
+      metadata.title = line.replace('title:', '').trim();
+    } else if (line.startsWith('excerpt:')) {
+      metadata.excerpt = line.replace('excerpt:', '').trim();
+    } else if (line === '---' && i > 0) {
+      bodyStart = i + 1;
+      break;
+    }
+  }
+
+  const body = lines.slice(bodyStart).join('\n');
+  return { metadata, body };
+}
+
+function formatDate(dateStr) {
+  const [month, day, year] = dateStr.split('/');
+  const date = new Date(`${year}-${month}-${day}`);
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${months[date.getMonth()]} ${parseInt(day)}, ${year}`;
+}
+
+function getIsoDate(dateStr) {
+  const [month, day, year] = dateStr.split('/');
+  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+}
+
+function generateLayout(title, content, currentTab) {
+  return `<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f1419" />
+  <title>` + title + ` - Chaoslab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+</head>
+
+<body>
+  <nav class="tab-nav" aria-label="Main navigation">
+    <a href="/" id="tab-main"` + (currentTab === 'main' ? ' aria-current="page"' : '') + `>Main</a>
+    <a href="/blog" id="tab-blog"` + (currentTab === 'blog' ? ' aria-current="page"' : '') + `>Blog</a>
+    <a href="/about" id="tab-about"` + (currentTab === 'about' ? ' aria-current="page"' : '') + `>About</a>
+  </nav>
+
+  <div class="panels">
+    ` + content + `
+  </div>
+
+  <footer class="site-footer">
+    <nav class="links" aria-label="Contacts">
+      <a href="mailto:chaoslabme@gmail.com" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <rect width="20" height="16" x="2" y="4" rx="2" />
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+        </svg></a>
+      <a href="https://github.com/chaofz" target="_blank" rel="noopener" title="GitHub"><svg
+          xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path
+            d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.22 1.85v4" />
+          <path d="M9 18c-4.51 2-5-2-7-2" />
+        </svg></a>
+      <a href="https://linkedin.com/in/chaozho" target="_blank" rel="noopener" title="LinkedIn"><svg
+          xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+          <rect width="4" height="12" x="2" y="9" />
+          <circle cx="4" cy="4" r="2" />
+        </svg></a>
+    </nav>
+  </footer>
+</body>
+
+</html>`;
+}
+
+function generatePostHtml(metadata, htmlContent) {
+  const formattedDate = formatDate(metadata.date);
+  const content = `
+    <section class="view is-active">
+      <div class="post-view">
+        <a href="/blog" class="back-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6" />
+          </svg>
+          Back to Blog
+        </a>
+
+        <header class="post-header">
+          <h1>` + metadata.title + `</h1>
+          <p class="meta">Published on ` + formattedDate + `</p>
+        </header>
+
+        <article class="post-content">
+` + htmlContent + `
+        </article>
+      </div>
+    </section>`;
+  return generateLayout(metadata.title, content, 'blog');
+}
+
+function updateBlogListPage(posts) {
+  const listHtml = posts.map(post => `
+          <li>
+            <article>
+              <h3><a href="/blog/` + post.link + `">` + post.title + `</a></h3>
+              <p class="meta">` + formatDate(post.date) + `</p>
+              <p class="excerpt">` + post.excerpt + `</p>
+            </article>
+          </li>`).join('');
+
+  const content = `
+    <!-- Blog view -->
+    <section id="view-blog" class="view is-active" aria-labelledby="blog-heading">
+      <div class="blog-inner">
+        <ul class="blog-list">
+` + listHtml + `
+        </ul>
+      </div>
+    </section>`;
+
+  const fullHtml = generateLayout('Blog', content, 'blog');
+  fs.writeFileSync(BLOG_LIST_PAGE, fullHtml);
+}
+
+function updateIndexPage(posts) {
+  const recentPosts = posts.slice(0, 3);
+  const listHtml = recentPosts.map(post => `
+            <li>
+              <a href="/blog/` + post.link + `">` + post.title + `</a>
+              <time datetime="` + getIsoDate(post.date) + `">` + formatDate(post.date) + `</time>
+            </li>`).join('');
+
+  const content = `
+    <!-- Main view -->
+    <section id="view-main" class="view is-active" aria-labelledby="main-heading">
+      <div class="main-inner">
+        <h1 id="main-heading" class="name">Chaofeng Zhou</h1>
+        <p class="tagline">Chaos, decoded</p>
+        <p class="intro">
+          I build things and write about tech and personal growth.
+        </p>
+        <div class="recent-section">
+          <h2>Recent articles</h2>
+          <ul class="recent-list">
+` + listHtml + `
+          </ul>
+          <a href="/blog" class="see-more">See more →</a>
+        </div>
+      </div>
+    </section>`;
+
+  const fullHtml = generateLayout('Chaofeng - Chaos, decoded', content, 'main');
+  fs.writeFileSync(INDEX_PAGE, fullHtml);
+}
+
+function generateAboutHtml(htmlContent) {
+  const content = `
+    <!-- About view -->
+    <section id="view-about" class="view is-active" aria-labelledby="about-heading">
+      <div class="about-inner">
+` + htmlContent + `
+      </div>
+    </section>`;
+  return generateLayout('About', content, 'about');
+}
+
+function updateAboutPage() {
+  if (fs.existsSync(ABOUT_MD)) {
+    const content = fs.readFileSync(ABOUT_MD, 'utf8');
+    let body = content;
+    if (content.includes('---')) {
+      const parts = content.split('---');
+      body = parts.slice(1).join('---');
+    }
+    const htmlContent = marked.parse(body);
+    const fullHtml = generateAboutHtml(htmlContent);
+    fs.writeFileSync(ABOUT_HTML, fullHtml);
+    console.log('Updated about page.');
+  }
+}
+
+function main() {
+  const files = fs.readdirSync(MD_DIR).filter(f => f.endsWith('.md') && f !== 'template.md');
+  const allPosts = [];
+
+  files.forEach(file => {
+    const filePath = path.join(MD_DIR, file);
+    const content = fs.readFileSync(filePath, 'utf8');
+    const { metadata, body } = parseMd(content);
+
+    if (!metadata.link || !metadata.date || !metadata.title) {
+      console.warn('Skipping ' + file + ': Missing metadata (link, date, or title)');
+      return;
+    }
+
+    allPosts.push(metadata);
+
+    const postDir = path.join(BLOG_DIR, metadata.link);
+    const postFile = path.join(postDir, 'index.html');
+
+    if (fs.existsSync(postFile)) {
+      console.log('Skipping generation for ' + metadata.link + ' as it already exists.');
+    } else {
+      if (!fs.existsSync(postDir)) {
+        fs.mkdirSync(postDir, { recursive: true });
+      }
+      const htmlContent = marked.parse(body);
+      const fullHtml = generatePostHtml(metadata, htmlContent);
+      fs.writeFileSync(postFile, fullHtml);
+      console.log('Generated blog post: ' + metadata.link);
+    }
+  });
+
+  allPosts.sort((a, b) => new Date(getIsoDate(b.date)) - new Date(getIsoDate(a.date)));
+
+  updateBlogListPage(allPosts);
+  updateIndexPage(allPosts);
+  updateAboutPage();
+  console.log('Updated blog list and index pages.');
+}
+
+main();

@@ -1,0 +1,28 @@
+{
+  "name": "chaoslab",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chaofz/chaoslab.git"
+  },
+  "keywords": [
+    "blog",
+    "personal",
+    "website"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/chaofz/chaoslab/issues"
+  },
+  "homepage": "https://github.com/chaofz/chaoslab#readme",
+  "dependencies": {
+    "marked": "^17.0.3"
+  }
+}
