@@ -3,12 +3,13 @@ const path = require('path');
 const { marked } = require('marked');
 
 // Configuration
+const DIST_DIR = path.join(__dirname, 'dist');
 const MD_DIR = path.join(__dirname, 'md');
-const BLOG_DIR = path.join(__dirname, 'blog');
-const ABOUT_DIR = path.join(__dirname, 'about');
+const BLOG_DIR = path.join(DIST_DIR, 'blog');
+const ABOUT_DIR = path.join(DIST_DIR, 'about');
 const BLOG_LIST_PAGE = path.join(BLOG_DIR, 'index.html');
-const INDEX_PAGE = path.join(__dirname, 'index.html');
-const ABOUT_MD = path.join(ABOUT_DIR, 'about.md');
+const INDEX_PAGE = path.join(DIST_DIR, 'index.html');
+const ABOUT_MD = path.join(MD_DIR, 'about.md');
 const ABOUT_HTML = path.join(ABOUT_DIR, 'index.html');
 
 // Helper to parse frontmatter-like fields from MD
@@ -19,8 +20,8 @@ function parseMd(content) {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
-    if (line.startsWith('link:')) {
-      metadata.link = line.replace('link:', '').trim();
+    if (line.startsWith('id:')) {
+      metadata.id = line.replace('id:', '').trim();
     } else if (line.startsWith('date:')) {
       metadata.date = line.replace('date:', '').trim();
     } else if (line.startsWith('title:')) {
@@ -124,7 +125,8 @@ function generatePostHtml(metadata, htmlContent) {
 
         <header class="post-header">
           <h1>` + metadata.title + `</h1>
-          <p class="meta">Published on ` + formattedDate + `</p>
+          <p class="excerpt">` + metadata.excerpt + `</p>
+          <p class="meta">` + formattedDate + `</p>
         </header>
 
         <article class="post-content">
@@ -136,10 +138,13 @@ function generatePostHtml(metadata, htmlContent) {
 }
 
 function updateBlogListPage(posts) {
+  if (!fs.existsSync(BLOG_DIR)) {
+    fs.mkdirSync(BLOG_DIR, { recursive: true });
+  }
   const listHtml = posts.map(post => `
           <li>
             <article>
-              <h3><a href="/blog/` + post.link + `">` + post.title + `</a></h3>
+              <h3><a href="/blog/` + post.id + `/">` + post.title + `</a></h3>
               <p class="meta">` + formatDate(post.date) + `</p>
               <p class="excerpt">` + post.excerpt + `</p>
             </article>
@@ -149,6 +154,7 @@ function updateBlogListPage(posts) {
     <!-- Blog view -->
     <section id="view-blog" class="view is-active" aria-labelledby="blog-heading">
       <div class="blog-inner">
+        <h2 id="blog-heading" class="section-title">Blog</h2>
         <ul class="blog-list">
 ` + listHtml + `
         </ul>
@@ -163,7 +169,7 @@ function updateIndexPage(posts) {
   const recentPosts = posts.slice(0, 3);
   const listHtml = recentPosts.map(post => `
             <li>
-              <a href="/blog/` + post.link + `">` + post.title + `</a>
+              <a href="/blog/` + post.id + `/">` + post.title + `</a>
               <time datetime="` + getIsoDate(post.date) + `">` + formatDate(post.date) + `</time>
             </li>`).join('');
 
@@ -195,6 +201,7 @@ function generateAboutHtml(htmlContent) {
     <!-- About view -->
     <section id="view-about" class="view is-active" aria-labelledby="about-heading">
       <div class="about-inner">
+        <h2 id="about-heading" class="section-title">About</h2>
 ` + htmlContent + `
       </div>
     </section>`;
@@ -211,13 +218,19 @@ function updateAboutPage() {
     }
     const htmlContent = marked.parse(body);
     const fullHtml = generateAboutHtml(htmlContent);
+    if (!fs.existsSync(ABOUT_DIR)) {
+      fs.mkdirSync(ABOUT_DIR, { recursive: true });
+    }
     fs.writeFileSync(ABOUT_HTML, fullHtml);
-    console.log('Updated about page.');
+    // console.log('Updated about page.');
   }
 }
 
 function main() {
-  const files = fs.readdirSync(MD_DIR).filter(f => f.endsWith('.md') && f !== 'template.md');
+  const generatedFiles = new Set();
+  const generatedDirs = new Set();
+
+  const files = fs.readdirSync(MD_DIR).filter(f => f.endsWith('.md') && f !== '_template.md' && f !== 'about.md');
   const allPosts = [];
 
   files.forEach(file => {
@@ -225,35 +238,99 @@ function main() {
     const content = fs.readFileSync(filePath, 'utf8');
     const { metadata, body } = parseMd(content);
 
-    if (!metadata.link || !metadata.date || !metadata.title) {
-      console.warn('Skipping ' + file + ': Missing metadata (link, date, or title)');
+    if (!metadata.id || !metadata.date || !metadata.title) {
+      console.warn('Skipping ' + file + ': Missing metadata (id, date, or title)');
       return;
     }
 
     allPosts.push(metadata);
 
-    const postDir = path.join(BLOG_DIR, metadata.link);
+    const postDir = path.join(BLOG_DIR, metadata.id);
     const postFile = path.join(postDir, 'index.html');
 
-    if (fs.existsSync(postFile)) {
-      console.log('Skipping generation for ' + metadata.link + ' as it already exists.');
-    } else {
-      if (!fs.existsSync(postDir)) {
-        fs.mkdirSync(postDir, { recursive: true });
-      }
-      const htmlContent = marked.parse(body);
-      const fullHtml = generatePostHtml(metadata, htmlContent);
-      fs.writeFileSync(postFile, fullHtml);
-      console.log('Generated blog post: ' + metadata.link);
+    if (!fs.existsSync(postDir)) {
+      fs.mkdirSync(postDir, { recursive: true });
+    }
+    generatedDirs.add(postDir);
+
+    const htmlContent = marked.parse(body);
+    const fullHtml = generatePostHtml(metadata, htmlContent);
+    const exists = fs.existsSync(postFile);
+    fs.writeFileSync(postFile, fullHtml);
+    generatedFiles.add(postFile);
+    if (!exists) {
+      console.log('Generated blog post: ' + metadata.id);
     }
   });
 
   allPosts.sort((a, b) => new Date(getIsoDate(b.date)) - new Date(getIsoDate(a.date)));
 
   updateBlogListPage(allPosts);
+  generatedFiles.add(BLOG_LIST_PAGE);
+  generatedDirs.add(BLOG_DIR);
+
   updateIndexPage(allPosts);
+  generatedFiles.add(INDEX_PAGE);
+
   updateAboutPage();
-  console.log('Updated blog list and index pages.');
+  if (fs.existsSync(ABOUT_HTML)) {
+    generatedFiles.add(ABOUT_HTML);
+    generatedDirs.add(ABOUT_DIR);
+  }
+
+  // Copy style.css and assets from root assets/ folder to dist
+  const rootAssetsDir = path.join(__dirname, 'assets');
+  if (fs.existsSync(rootAssetsDir)) {
+    const assets = fs.readdirSync(rootAssetsDir);
+    assets.forEach(asset => {
+      const srcPath = path.join(rootAssetsDir, asset);
+      if (asset === 'style.css') {
+        const destPath = path.join(DIST_DIR, 'style.css');
+        fs.copyFileSync(srcPath, destPath);
+        generatedFiles.add(destPath);
+      } else {
+        const destAssetsDir = path.join(DIST_DIR, 'assets');
+        if (!fs.existsSync(destAssetsDir)) {
+          fs.mkdirSync(destAssetsDir, { recursive: true });
+        }
+        generatedDirs.add(destAssetsDir);
+        const destPath = path.join(destAssetsDir, asset);
+        fs.copyFileSync(srcPath, destPath);
+        generatedFiles.add(destPath);
+      }
+    });
+  }
+
+  // Cleanup unmatched files and dirs in dist
+  function cleanup(dir) {
+    if (!fs.existsSync(dir)) return;
+    const items = fs.readdirSync(dir);
+    items.forEach(item => {
+      const fullPath = path.join(dir, item);
+      const stats = fs.statSync(fullPath);
+      if (stats.isDirectory()) {
+        cleanup(fullPath);
+        // After cleaning up children, if this directory itself is not in generatedDirs, delete it if empty
+        if (!generatedDirs.has(fullPath)) {
+          const remaining = fs.readdirSync(fullPath);
+          if (remaining.length === 0) {
+            fs.rmdirSync(fullPath);
+            console.log('Deleted unmatched directory: ' + path.relative(DIST_DIR, fullPath));
+          }
+        }
+      } else {
+        // If it's a file and not in generatedFiles, delete it
+        if (!generatedFiles.has(fullPath)) {
+          fs.unlinkSync(fullPath);
+          console.log('Deleted unmatched file: ' + path.relative(DIST_DIR, fullPath));
+        }
+      }
+    });
+  }
+
+  cleanup(DIST_DIR);
+
+  console.log('Build completed.');
 }
 
 main();

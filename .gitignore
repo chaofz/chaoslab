@@ -29,6 +29,4 @@ yarn-error.log*
 *.sln
 
 # Blog
-md/template.md
-blog/**/*.html
-about/**/*.html
+md/_template.md
