@@ -3,7 +3,11 @@ node_modules/
 
 # Production
 build/
-dist/
+dist/blog/
+dist/about/
+dist/assets/
+dist/**/*.html
+dist/style.css
 .next/
 out/
 

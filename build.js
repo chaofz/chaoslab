@@ -58,16 +58,18 @@ function generateLayout(title, content, currentTab) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#0f1419" />
+  <script>
+    (function() {
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
   <title>` + title + ` - Chaoslab</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
-    rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
-  <link rel="icon" type="image/png" href="/assets/favicon.png" />
 </head>
 
 <body>
@@ -104,7 +106,19 @@ function generateLayout(title, content, currentTab) {
           <circle cx="4" cy="4" r="2" />
         </svg></a>
     </nav>
+    <button class="theme-toggle" id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+      <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+      <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    </button>
   </footer>
+  <script>
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    });
+  </script>
 </body>
 
 </html>`;
@@ -153,7 +167,7 @@ function updateBlogListPage(posts) {
   const content = `
     <!-- Blog view -->
     <section id="view-blog" class="view is-active" aria-labelledby="blog-heading">
-      <div class="blog-inner">
+      <div class="blog-inner inner-content">
         <h2 id="blog-heading" class="section-title">Blog</h2>
         <ul class="blog-list">
 ` + listHtml + `
@@ -187,7 +201,7 @@ function updateIndexPage(posts) {
           <ul class="recent-list">
 ` + listHtml + `
           </ul>
-          <a href="/blog" class="see-more">See more →</a>
+          <a href="/blog" class="see-more">See more</a>
         </div>
       </div>
     </section>`;
@@ -200,7 +214,7 @@ function generateAboutHtml(htmlContent) {
   const content = `
     <!-- About view -->
     <section id="view-about" class="view is-active" aria-labelledby="about-heading">
-      <div class="about-inner">
+      <div class="about-inner inner-content">
         <h2 id="about-heading" class="section-title">About</h2>
 ` + htmlContent + `
       </div>
@@ -277,58 +291,6 @@ function main() {
     generatedFiles.add(ABOUT_HTML);
     generatedDirs.add(ABOUT_DIR);
   }
-
-  // Copy style.css and assets from root assets/ folder to dist
-  const rootAssetsDir = path.join(__dirname, 'assets');
-  if (fs.existsSync(rootAssetsDir)) {
-    const assets = fs.readdirSync(rootAssetsDir);
-    assets.forEach(asset => {
-      const srcPath = path.join(rootAssetsDir, asset);
-      if (asset === 'style.css') {
-        const destPath = path.join(DIST_DIR, 'style.css');
-        fs.copyFileSync(srcPath, destPath);
-        generatedFiles.add(destPath);
-      } else {
-        const destAssetsDir = path.join(DIST_DIR, 'assets');
-        if (!fs.existsSync(destAssetsDir)) {
-          fs.mkdirSync(destAssetsDir, { recursive: true });
-        }
-        generatedDirs.add(destAssetsDir);
-        const destPath = path.join(destAssetsDir, asset);
-        fs.copyFileSync(srcPath, destPath);
-        generatedFiles.add(destPath);
-      }
-    });
-  }
-
-  // Cleanup unmatched files and dirs in dist
-  function cleanup(dir) {
-    if (!fs.existsSync(dir)) return;
-    const items = fs.readdirSync(dir);
-    items.forEach(item => {
-      const fullPath = path.join(dir, item);
-      const stats = fs.statSync(fullPath);
-      if (stats.isDirectory()) {
-        cleanup(fullPath);
-        // After cleaning up children, if this directory itself is not in generatedDirs, delete it if empty
-        if (!generatedDirs.has(fullPath)) {
-          const remaining = fs.readdirSync(fullPath);
-          if (remaining.length === 0) {
-            fs.rmdirSync(fullPath);
-            console.log('Deleted unmatched directory: ' + path.relative(DIST_DIR, fullPath));
-          }
-        }
-      } else {
-        // If it's a file and not in generatedFiles, delete it
-        if (!generatedFiles.has(fullPath)) {
-          fs.unlinkSync(fullPath);
-          console.log('Deleted unmatched file: ' + path.relative(DIST_DIR, fullPath));
-        }
-      }
-    });
-  }
-
-  cleanup(DIST_DIR);
 
   console.log('Build completed.');
 }
