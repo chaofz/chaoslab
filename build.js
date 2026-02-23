@@ -64,12 +64,13 @@ function generateLayout(title, content, currentTab) {
       document.documentElement.setAttribute('data-theme', theme);
     })();
   </script>
-  <title>` + title + ` - Chaoslab</title>
+  <title>` + title + `</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
 </head>
 
 <body>
@@ -167,7 +168,7 @@ function updateBlogListPage(posts) {
   const content = `
     <!-- Blog view -->
     <section id="view-blog" class="view is-active" aria-labelledby="blog-heading">
-      <div class="blog-inner inner-content">
+      <div class="blog-inner">
         <h2 id="blog-heading" class="section-title">Blog</h2>
         <ul class="blog-list">
 ` + listHtml + `
@@ -214,7 +215,7 @@ function generateAboutHtml(htmlContent) {
   const content = `
     <!-- About view -->
     <section id="view-about" class="view is-active" aria-labelledby="about-heading">
-      <div class="about-inner inner-content">
+      <div class="about-inner">
         <h2 id="about-heading" class="section-title">About</h2>
 ` + htmlContent + `
       </div>
@@ -291,6 +292,68 @@ function main() {
     generatedFiles.add(ABOUT_HTML);
     generatedDirs.add(ABOUT_DIR);
   }
+
+  // Ensure dist/style.css and dist/assets are marked as generated/protected files so they're not deleted by cleanup
+  const distStyleCss = path.join(DIST_DIR, 'style.css');
+  if (fs.existsSync(distStyleCss)) {
+    generatedFiles.add(distStyleCss);
+  }
+  const distAssetsDir = path.join(DIST_DIR, 'assets');
+  if (fs.existsSync(distAssetsDir)) {
+    generatedDirs.add(distAssetsDir);
+    // Recursively add all files in dist/assets to generatedFiles to protect them
+    const addFilesRecursively = (dir) => {
+      const items = fs.readdirSync(dir);
+      items.forEach(item => {
+        const fullPath = path.join(dir, item);
+        if (fs.statSync(fullPath).isDirectory()) {
+          generatedDirs.add(fullPath);
+          addFilesRecursively(fullPath);
+        } else {
+          generatedFiles.add(fullPath);
+        }
+      });
+    };
+    addFilesRecursively(distAssetsDir);
+  }
+
+  // Cleanup unmatched files and dirs in dist
+  function cleanup(dir) {
+    if (!fs.existsSync(dir)) return;
+    const items = fs.readdirSync(dir);
+    items.forEach(item => {
+      const fullPath = path.join(dir, item);
+      const stats = fs.statSync(fullPath);
+      if (stats.isDirectory()) {
+        // Only cleanup blog/ and about/ directories
+        const relativePath = path.relative(DIST_DIR, fullPath);
+        if (relativePath.startsWith('blog') || relativePath.startsWith('about')) {
+          cleanup(fullPath);
+          // After cleaning up children, if this directory itself is not in generatedDirs, delete it if empty
+          if (!generatedDirs.has(fullPath)) {
+            const remaining = fs.readdirSync(fullPath);
+            if (remaining.length === 0) {
+              fs.rmdirSync(fullPath);
+              console.log('Deleted unmatched directory: ' + path.relative(DIST_DIR, fullPath));
+            }
+          }
+        }
+      } else {
+        // Only cleanup files that should be synced with MD
+        const relativePath = path.relative(DIST_DIR, fullPath);
+        const isBlogFile = relativePath.startsWith('blog');
+        const isAboutFile = relativePath.startsWith('about');
+        const isIndexFile = relativePath === 'index.html';
+
+        if ((isBlogFile || isAboutFile || isIndexFile) && !generatedFiles.has(fullPath)) {
+          fs.unlinkSync(fullPath);
+          console.log('Deleted unmatched file: ' + path.relative(DIST_DIR, fullPath));
+        }
+      }
+    });
+  }
+
+  cleanup(DIST_DIR);
 
   console.log('Build completed.');
 }

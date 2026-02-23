@@ -1,6 +1,6 @@
 Oh, hello.
 
-I’m Chaofeng (Chao) Zhou. I build at the intersection of technology, intelligence, and personal growth — designing systems and decoding complexity into leverage.
+I’m Chaofeng Zhou and I go by Chao in the US. I am currently a software engineer at Meta. I build at the intersection of technology, intelligence, and personal growth — designing systems and decoding complexity into leverage.
 
 My career runs through high-scale engineering environments — Meta, Amazon, and Blend — where I’ve worked on distributed systems, backend architecture, and optimization ML algorithms operating at scale. My focus has consistently been performance under constraint: latency, cost, reliability, and incentive alignment.
 
