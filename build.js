@@ -75,9 +75,12 @@ function generateLayout(title, content, currentTab) {
 
 <body>
   <nav class="tab-nav" aria-label="Main navigation">
-    <a href="/" id="tab-main"` + (currentTab === 'main' ? ' aria-current="page"' : '') + `>Main</a>
-    <a href="/blog" id="tab-blog"` + (currentTab === 'blog' ? ' aria-current="page"' : '') + `>Blog</a>
-    <a href="/about" id="tab-about"` + (currentTab === 'about' ? ' aria-current="page"' : '') + `>About</a>
+    <div class="nav-brand">Chaos Lab</div>
+    <div class="nav-links">
+      <a href="/" id="tab-main"` + (currentTab === 'main' ? ' aria-current="page"' : '') + `>Main</a>
+      <a href="/blog" id="tab-blog"` + (currentTab === 'blog' ? ' aria-current="page"' : '') + `>Blog</a>
+      <a href="/about" id="tab-about"` + (currentTab === 'about' ? ' aria-current="page"' : '') + `>About</a>
+    </div>
   </nav>
 
   <div class="panels">
