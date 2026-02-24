@@ -59,7 +59,7 @@ body {
 
 /* Layout Components */
 .tab-nav {
-  position: sticky;
+  position: relative;
   top: 0;
   z-index: 10;
   flex-shrink: 0;
@@ -225,11 +225,50 @@ body {
   transition: background-color 0.3s ease;
 }
 
+.copyright {
+  position: absolute;
+  left: 1.5rem;
+  font-size: 0.8125rem;
+  color: var(--secondary-text);
+  opacity: 0.8;
+}
+
+.post-content hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border-color), transparent);
+  margin: 3rem 0;
+}
+
 .links {
   display: flex;
   gap: 0.5rem;
   justify-content: center;
   align-items: center;
+  position: relative;
+}
+
+.copy-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  background: var(--text-color);
+  color: var(--bg-color);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.1s ease, transform 0.1s ease;
+  transform: translateY(0);
+  white-space: nowrap;
+  z-index: 20;
+}
+
+.copy-tooltip.show {
+  opacity: 0.9;
+  transform: translateX(-27px) translateY(-8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .links a {
@@ -573,6 +612,7 @@ body {
   font-size: 1.0625rem;
   line-height: 1.7;
   color: var(--text-color);
+  margin-bottom: 8rem;
 }
 
 .post-content a {

@@ -6,4 +6,6 @@ My career runs through high-scale engineering environments — Meta, Amazon, and
 
 My interests extended beyond engineering into social science and the liberal arts was sparked by my time at Yale. I’m drawn to how systems shape behavior — markets, platforms, institutions, and the psychological layer beneath them. Technology is never just technical; it reorganizes incentives and rewrites structures.
 
-Chaos is not noise. It is unstructured potential.
+Chaos is not noise. 
+
+It is unstructured potential.
