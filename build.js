@@ -87,7 +87,7 @@ function generateLayout(title, content, currentTab) {
   </div>
 
   <footer class="site-footer">
-    <div class="copyright">&copy; 2026, Chao</div>
+    <div class="copyright">&copy; 2026, Chao Z</div>
     <nav class="links" aria-label="Contacts">
       <a href="mailto:chaoslabme@gmail.com" title="Email" id="email-link"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
           viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -248,7 +248,7 @@ function updateAboutPage() {
       const parts = content.split('---');
       body = parts.slice(1).join('---');
     }
-    const htmlContent = marked.parse(body);
+    const htmlContent = marked.parse(body) + '<br><br>&mdash; Chao Zhou';
     const fullHtml = generateAboutHtml(htmlContent);
     if (!fs.existsSync(ABOUT_DIR)) {
       fs.mkdirSync(ABOUT_DIR, { recursive: true });
@@ -285,7 +285,7 @@ function main() {
     }
     generatedDirs.add(postDir);
 
-    const htmlContent = marked.parse(body);
+    const htmlContent = marked.parse(body) + '<br><br>&mdash; Chao Zhou';
     const fullHtml = generatePostHtml(metadata, htmlContent);
     const exists = fs.existsSync(postFile);
     fs.writeFileSync(postFile, fullHtml);

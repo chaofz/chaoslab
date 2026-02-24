@@ -450,7 +450,7 @@ body {
 
 #view-blog .blog-inner {
   max-width: 42rem;
-  margin: 4rem auto;
+  margin: 3rem auto;
   width: 100%;
   padding: 1.5rem 0;
 }
@@ -462,11 +462,11 @@ body {
 }
 
 #view-blog h2 {
-  font-size: clamp(1.75rem, 8vw, 3rem);
+  font-size: clamp(1.55rem, 8vw, 2.5rem);
   font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1.15;
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 2rem 0;
   color: var(--text-color);
   text-align: center;
 }
@@ -479,7 +479,7 @@ body {
 #view-about .about-inner {
   max-width: 42rem;
   width: 100%;
-  margin: 4rem auto;
+  margin: 3rem auto;
   padding: 1.5rem 0;
 }
 
@@ -490,11 +490,11 @@ body {
 }
 
 #view-about h2 {
-  font-size: clamp(1.75rem, 8vw, 3rem);
+  font-size: clamp(1.55rem, 8vw, 2.5rem);
   font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1.15;
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 2rem 0;
   color: var(--text-color);
   text-align: center;
 }

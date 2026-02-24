@@ -4,6 +4,8 @@ date: 02/23/2026
 excerpt: The constraint is the signal.
 ---
 
+![When Constraints Shatter, Opportunity Opens](assets/when-constraints-shatter-opportunity-opens.png)
+
 Most people look at markets and see competition.
 
 The better question is: **what changed underneath the competition?**
