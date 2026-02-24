@@ -73,6 +73,9 @@ body {
   padding-top: max(1rem, env(safe-area-inset-top));
   background: var(--nav-bg);
   transition: background-color 0.3s ease;
+  max-width: 60rem;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .tab-nav a.nav-brand {
@@ -102,7 +105,6 @@ body {
 
 .nav-links {
   display: flex;
-  gap: 0.25rem;
 }
 
 .tab-nav a {
@@ -378,15 +380,18 @@ body {
 }
 
 .see-more {
-  display: block;
+  display: inline-block;
   margin-top: 0.25rem;
-  text-align: right;
   font-size: 0.9rem;
   color: var(--accent-color);
   opacity: 0.9;
   text-decoration: none;
   font-weight: 50;
   transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.recent-section .see-more-container {
+  text-align: right;
 }
 
 .see-more:hover {
