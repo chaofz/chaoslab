@@ -75,11 +75,29 @@ body {
   transition: background-color 0.3s ease;
 }
 
-.nav-brand {
+.tab-nav a.nav-brand {
   font-weight: 600;
   font-size: 1.125rem;
   color: var(--text-color);
   letter-spacing: -0.02em;
+  text-decoration: none;
+  padding: 0;
+  background: transparent;
+  opacity: 1;
+}
+
+.tab-nav a.nav-brand:hover {
+  color: var(--accent-color);
+  background: transparent;
+  opacity: 1;
+}
+
+.nav-brand {
+  font-weight: 600;
+  font-size: 2.125rem;
+  color: var(--text-color);
+  letter-spacing: -0.02em;
+  text-decoration: none;
 }
 
 .nav-links {
@@ -165,6 +183,17 @@ body {
   line-height: 1.15;
   margin: 10rem 0 0.5rem 0;
   color: var(--text-color);
+}
+
+@media (max-width: 480px) {
+  .name {
+    font-size: clamp(1.75rem, 8vw, 3rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin: 7rem 0 0.5rem 0;
+    color: var(--text-color);
+  }
 }
 
 .tagline {
