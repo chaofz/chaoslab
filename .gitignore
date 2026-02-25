@@ -22,7 +22,10 @@ yarn-error.log*
 .vscode/
 .cursor/
 .idea/
+.skills/
 
 # Blog
 md/_template.md
 drafts/
+# Local agent config
+AGENTS.md

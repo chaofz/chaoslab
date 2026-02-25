@@ -57,11 +57,15 @@ function generateLayout(title, content, currentTab) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0f1419" />
+  <meta name="theme-color" content="#ffffff" id="meta-theme-color" />
   <script>
     (function() {
       const theme = localStorage.getItem('theme') || 'light';
       document.documentElement.setAttribute('data-theme', theme);
+      const metaTheme = document.getElementById('meta-theme-color');
+      if (metaTheme) {
+        metaTheme.setAttribute('content', theme === 'dark' ? '#0b0e14' : '#ffffff');
+      }
     })();
   </script>
   <title>` + title + `</title>
@@ -115,6 +119,10 @@ function generateLayout(title, content, currentTab) {
       const newTheme = currentTheme === 'light' ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
+      const metaTheme = document.getElementById('meta-theme-color');
+      if (metaTheme) {
+        metaTheme.setAttribute('content', newTheme === 'dark' ? '#0b0e14' : '#ffffff');
+      }
     });
 
     const emailLink = document.getElementById('email-link');
@@ -234,7 +242,9 @@ function generateAboutHtml(htmlContent) {
     <section id="view-about" class="view is-active" aria-labelledby="about-heading">
       <div class="about-inner">
         <h2 id="about-heading" class="section-title">About</h2>
+        <div class="about-content">
 ` + htmlContent + `
+        </div>
       </div>
     </section>`;
   return generateLayout('About', content, 'about');

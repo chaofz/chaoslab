@@ -1,9 +1,9 @@
 :root {
+  --text-color: #24292f;
   --bg-color: #ffffff;
-  --text-color: #111111;
   --nav-bg: rgba(255, 255, 255, 0.95);
   --accent-color: #2da44e;
-  --secondary-text: #444d56;
+  --secondary-text: #57606a;
   --border-color: #d0d7de;
   --link-color: #0969da;
   --link-hover-color: #0a69da;
@@ -15,19 +15,19 @@
 }
 
 [data-theme="dark"] {
-  --bg-color: #0f1419;
-  --text-color: #e6edf3;
-  --nav-bg: rgba(15, 20, 25, 0.95);
+  --bg-color: #0b0e14;
+  --text-color: #d1d9e0;
+  --nav-bg: rgba(11, 14, 20, 0.95);
   --accent-color: #7ee787;
   --secondary-text: #8b949e;
-  --border-color: #30363d;
+  --border-color: #1f242c;
   --link-color: #58a6ff;
   --link-hover-color: #79c0ff;
   --code-bg: rgba(110, 118, 129, 0.2);
   --pre-bg: #161b22;
   --pre-border: #30363d;
   --hover-bg: rgba(230, 237, 243, 0.04);
-  --footer-bg: #0f1419;
+  --footer-bg: #0b0e14;
 }
 
 /* Base & Global */
@@ -114,7 +114,7 @@ body {
   opacity: 0.9;
   text-decoration: none;
   border-radius: 6px;
-  transition: color 0.2s ease, background 0.2s ease;
+  transition: color 0.1s ease, background 0.1s ease;
 }
 
 @media (max-width: 480px) {
@@ -223,20 +223,28 @@ body {
   background: var(--footer-bg);
   position: relative;
   transition: background-color 0.3s ease;
+  max-width: 60rem;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .copyright {
   position: absolute;
   left: 1.5rem;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--secondary-text);
-  opacity: 0.8;
+  opacity: 0.6;
 }
 
 .post-content hr {
   border: none;
   height: 1px;
-  background: linear-gradient(to right, transparent, var(--border-color), transparent);
+  background: linear-gradient(to right,
+      transparent 15%,
+      var(--border-color) 35%,
+      var(--border-color) 65%,
+      transparent 85%);
+  height: 2px;
   margin: 3rem 0;
 }
 
@@ -499,10 +507,27 @@ body {
   text-align: center;
 }
 
-#view-about p {
-  color: var(--secondary-text);
-  line-height: 1.65;
-  margin: 0 0 1rem 0;
+#view-about .about-content {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--text-color);
+  opacity: 0.9;
+  margin-bottom: 5rem;
+}
+
+#view-about .about-content p {
+  margin-bottom: 1.5rem;
+}
+
+#view-about .about-content a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+#view-about .about-content a:hover {
+  color: var(--link-hover-color);
+  text-decoration: underline;
 }
 
 /* Shared Blog Styles */
@@ -612,6 +637,7 @@ body {
   font-size: 1.0625rem;
   line-height: 1.7;
   color: var(--text-color);
+  opacity: 0.9;
   margin-bottom: 8rem;
 }
 
